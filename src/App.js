@@ -3,6 +3,7 @@ import './style.scss'
 import Message from './components/Message'
 import {useEffect, useState} from 'react'
 import {Box, TextField, Button, List, ListItem} from '@mui/material'
+import { useNavigate } from "react-router-dom";
 
 const chats = [
     {name: 'chat1', id: 1},
@@ -14,6 +15,10 @@ function App() {
     const [messageList, setMessageList] = useState([])
     const [author, setAuthor] = useState('')
     const [text, setText] = useState('')
+    let navigate = useNavigate();
+    function handleClick() {
+        navigate("/home");
+    }
 
     const onChangeText = (e) => {
         setText(e.target.value)
@@ -64,7 +69,7 @@ function App() {
                 </Box>
                 <Box sx={{display: 'flex'}}>
                     <List>{messageList.map(({text}, n) => <Message text={text} key={text + n}/>)}</List>
-                    <List> {chats.map(({name, id}) => <ListItem id={id}> {name} </ListItem>)}</List>
+                    <List> {chats.map(({name, id}) => <ListItem key={id} id={id}> {name} </ListItem>)}</List>
                 </Box>
             </header>
         </div>

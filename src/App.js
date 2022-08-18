@@ -10,24 +10,40 @@ const chats = [
     {name: 'chat3', id: 3}
 ]
 
+const errorFields = {
+    author: false,
+    text: false
+}
+
 function App() {
     const [messageList, setMessageList] = useState([])
     const [author, setAuthor] = useState('')
     const [text, setText] = useState('')
+    const [errors, setErrors] = useState(errorFields)
 
-    const onChangeText = (e) => {
-        setText(e.target.value)
+    const onChangeText = ({target: {value}}) => {
+        setText(value)
+        if (value) {
+            setErrors(prevState => ({...prevState, text: false}))
+        } else setErrors(prevState => ({...prevState, text: true}))
     }
 
-    const onChangeAuthor = (e) => {
-        setAuthor(e.target.value)
+    const onChangeAuthor = ({target: {value}}) => {
+        setAuthor(value)
+        if (value) {
+            setErrors(prevState => ({...prevState, author: false}))
+        } else setErrors(prevState => ({...prevState, author: true}))
     }
 
-    const submitMessage = e => {
+    const submitMessage = (e) => {
         e.preventDefault()
-        setMessageList(prevState => [...prevState, {author, text}])
-        setText('')
-        setAuthor('')
+        if (author.length && text.length) {
+            setMessageList(prevState => [...prevState, {author, text}])
+            setText('')
+            setAuthor('')
+        }
+        if (!author.length) setErrors(prevState => ({...prevState, author: true}))
+        if (!text.length) setErrors(prevState => ({...prevState, text: true}))
     }
 
     useEffect(() => {
@@ -44,10 +60,11 @@ function App() {
                     sx={{
                         '& .MuiTextField-root': {m: 1, width: '25ch'},
                     }}
-                    noValidate
                     autoComplete="off"
                 >
                     <TextField
+                        error={errors.author}
+                        helperText={errors.author ? 'Please, enter author' : null}
                         autoFocus
                         id="outlined-required"
                         label="Author"
@@ -55,6 +72,8 @@ function App() {
                         value={author}
                     />
                     <TextField
+                        error={errors.text}
+                        helperText={errors.text ? 'Please, enter text' : null}
                         id="outlined-required"
                         label="Text"
                         onChange={onChangeText}

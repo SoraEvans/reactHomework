@@ -2,8 +2,7 @@ import logo from './logo.svg'
 import './style.scss'
 import Message from './components/Message'
 import {useEffect, useState} from 'react'
-import {Box, TextField, Button, List, ListItem} from '@mui/material'
-import { useNavigate } from "react-router-dom";
+import {Box, TextField, Button, List, ListItem, useTheme} from '@mui/material'
 
 const chats = [
     {name: 'chat1', id: 1},
@@ -11,28 +10,38 @@ const chats = [
     {name: 'chat3', id: 3}
 ]
 
+const errorFields = {author: false, text: false}
+
 function App() {
     const [messageList, setMessageList] = useState([])
     const [author, setAuthor] = useState('')
     const [text, setText] = useState('')
-    let navigate = useNavigate();
-    function handleClick() {
-        navigate("/home");
+    const [errors, setErrors] = useState(errorFields)
+    const theme = useTheme()
+
+    const onChangeText = ({target: {value}}) => {
+        setText(value)
+        if (value) {
+            setErrors(prevState => ({...prevState, text: false}))
+        } else setErrors(prevState => ({...prevState, text: true}))
     }
 
-    const onChangeText = (e) => {
-        setText(e.target.value)
+    const onChangeAuthor = ({target: {value}}) => {
+        setAuthor(value)
+        if (value) {
+            setErrors(prevState => ({...prevState, author: false}))
+        } else setErrors(prevState => ({...prevState, author: true}))
     }
 
-    const onChangeAuthor = (e) => {
-        setAuthor(e.target.value)
-    }
-
-    const submitMessage = e => {
+    const submitMessage = (e) => {
         e.preventDefault()
-        setMessageList(prevState => [...prevState, {author, text}])
-        setText('')
-        setAuthor('')
+        if (author.length && text.length) {
+            setMessageList(prevState => [...prevState, {author, text}])
+            setText('')
+            setAuthor('')
+        }
+        if (!author.length) setErrors(prevState => ({...prevState, author: true}))
+        if (!text.length) setErrors(prevState => ({...prevState, text: true}))
     }
 
     useEffect(() => {
@@ -49,10 +58,11 @@ function App() {
                     sx={{
                         '& .MuiTextField-root': {m: 1, width: '25ch'},
                     }}
-                    noValidate
                     autoComplete="off"
                 >
                     <TextField
+                        error={errors.author}
+                        helperText={errors.author ? 'Please, enter author' : null}
                         autoFocus
                         id="outlined-required"
                         label="Author"
@@ -60,12 +70,23 @@ function App() {
                         value={author}
                     />
                     <TextField
+                        error={errors.text}
+                        helperText={errors.text ? 'Please, enter text' : null}
                         id="outlined-required"
                         label="Text"
                         onChange={onChangeText}
                         value={text}
                     />
-                    <Button onClick={submitMessage} variant="contained">SEND</Button>
+                    <Button
+                        style={{
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.secondary.main,
+                        }}
+                        onClick={submitMessage}
+                        variant="contained"
+                    >
+                        SEND
+                    </Button>
                 </Box>
                 <Box sx={{display: 'flex'}}>
                     <List>{messageList.map(({text}, n) => <Message text={text} key={text + n}/>)}</List>

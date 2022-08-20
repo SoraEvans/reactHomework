@@ -10,6 +10,7 @@ const chats = [
     {name: 'chat3', id: 3}
 ]
 
+
 const errorFields = {author: false, text: false}
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     const [author, setAuthor] = useState('')
     const [text, setText] = useState('')
     const [errors, setErrors] = useState(errorFields)
+
     const theme = useTheme()
 
     const onChangeText = ({target: {value}}) => {

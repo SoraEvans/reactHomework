@@ -1,7 +1,9 @@
+import {ListItem} from "@mui/material";
+
 const Message = ({ text }) => (
-  <p className="Message">
+  <ListItem>
     {text}
-  </p>
+  </ListItem>
 )
 
 export default Message

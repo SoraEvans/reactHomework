@@ -3,6 +3,7 @@ import './style.scss'
 import Message from './components/Message'
 import {useEffect, useState} from 'react'
 import {Box, TextField, Button, List, ListItem, useTheme} from '@mui/material'
+import {useNavigate, useLocation, useParams} from "react-router-dom";
 
 const chats = [
     {name: 'chat1', id: 1},
@@ -18,6 +19,12 @@ function App() {
     const [text, setText] = useState('')
     const [errors, setErrors] = useState(errorFields)
     const theme = useTheme()
+    const navigate = useNavigate();
+    const {chatId} = useParams();
+
+    const onNavigateChats = (n) => {
+        navigate(`../chats/${n}`, {replace: true});
+    }
 
     const onChangeText = ({target: {value}}) => {
         setText(value)
@@ -49,10 +56,16 @@ function App() {
         length && setTimeout(() => alert(`Message sent ${messageList[length - 1].author}`), 1500)
     }, [messageList.length])
 
+    useEffect(() => {
+        if (chatId) {
+            !chats.find(({name}) => name === chatId) && navigate(`../404`, {replace: true});
+        }
+    }, [])
+
     return (
         <div className="App">
             <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo"/>
+                <div>Selected chat: {chatId || 'none'}</div>
                 <Box
                     component="form"
                     sx={{
@@ -61,6 +74,7 @@ function App() {
                     autoComplete="off"
                 >
                     <TextField
+                        className="form-input"
                         error={errors.author}
                         helperText={errors.author ? 'Please, enter author' : null}
                         autoFocus
@@ -70,6 +84,7 @@ function App() {
                         value={author}
                     />
                     <TextField
+                        className="form-input"
                         error={errors.text}
                         helperText={errors.text ? 'Please, enter text' : null}
                         id="outlined-required"
@@ -90,7 +105,17 @@ function App() {
                 </Box>
                 <Box sx={{display: 'flex'}}>
                     <List>{messageList.map(({text}, n) => <Message text={text} key={text + n}/>)}</List>
-                    <List> {chats.map(({name, id}) => <ListItem key={id} id={id}> {name} </ListItem>)}</List>
+                    <List> {chats.map(({name, id}) => (
+                            <ListItem
+                                className={chatId === name ? 'selected-chat' : null}
+                                onClick={() => onNavigateChats(name)}
+                                key={id}
+                                id={id}
+                            >
+                                {name}
+                            </ListItem>
+                        )
+                    )}</List>
                 </Box>
             </header>
         </div>

@@ -32,10 +32,11 @@ root.render(
                 </ul>
             </header>
             <Routes>
-                <Route path="/chats" element={<App/>}/>
+                <Route path="/chats" element={<App/>}>
+                    <Route path=":chatId" element={<App/>}/>
+                </Route>
                 <Route index path="/profile" element={<Profile/>}/>
                 <Route exact path="/" element={<Home/>}/>
-                <Route path="/chats/:chatId" element={<App/>}/>
                 <Route path="/404" element={<NotFound/>}/>
                 <Route
                     path="*"

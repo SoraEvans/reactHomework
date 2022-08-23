@@ -1,15 +1,15 @@
-import logo from './logo.svg'
 import './style.scss'
 import Message from './components/Message'
 import {useEffect, useState} from 'react'
-import {Box, TextField, Button, List, ListItem, useTheme} from '@mui/material'
-import {useNavigate, useLocation, useParams} from "react-router-dom";
+import { Box, TextField, Button, List, ListItem, useTheme } from '@mui/material'
+import {useNavigate, useParams} from 'react-router-dom'
 
 const chats = [
     {name: 'chat1', id: 1},
     {name: 'chat2', id: 2},
     {name: 'chat3', id: 3}
 ]
+
 
 const errorFields = {author: false, text: false}
 

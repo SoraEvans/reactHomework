@@ -54,3 +54,7 @@ button {
 .form-input {
   margin: 8px 0 !important;
 }
+
+div[role='checkbox'] {
+  cursor: pointer;
+}

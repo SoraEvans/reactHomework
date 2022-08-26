@@ -1,111 +1,119 @@
 import './style.scss'
 import Message from './components/Message'
-import {useEffect, useState} from 'react'
-import { Box, TextField, Button, List, ListItem, useTheme } from '@mui/material'
-import {useNavigate, useParams} from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Box, TextField, Button, List, ListItem } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { addChats, removeChats, sendMessage } from './redux/slice'
+import { getChatList } from './redux/selectors'
 
-const chats = [
-    {name: 'chat1', id: 1},
-    {name: 'chat2', id: 2},
-    {name: 'chat3', id: 3}
-]
-
-
-const errorFields = {author: false, text: false}
+const errorFields = { author: false, text: false }
 
 function App() {
-    const [messageList, setMessageList] = useState([])
     const [author, setAuthor] = useState('')
     const [text, setText] = useState('')
     const [errors, setErrors] = useState(errorFields)
-    const theme = useTheme()
     const navigate = useNavigate();
-    const {chatId} = useParams();
+    const { chatId } = useParams();
+    const chats = useSelector(getChatList, shallowEqual)
+    const dispatch = useDispatch()
+
+    const addChat = () => dispatch(addChats('test'))
+
+    const deleteChat = (id) => {
+        dispatch(removeChats(id))
+    }
 
     const onNavigateChats = (n) => {
-        navigate(`../chats/${n}`, {replace: true});
+        navigate(`../chats/${n}`, { replace: true })
     }
 
-    const onChangeText = ({target: {value}}) => {
+    const onChangeText = ({ target: { value } }) => {
         setText(value)
         if (value) {
-            setErrors(prevState => ({...prevState, text: false}))
-        } else setErrors(prevState => ({...prevState, text: true}))
+            setErrors(prevState => ({ ...prevState, text: false }))
+        } else setErrors(prevState => ({ ...prevState, text: true }))
     }
 
-    const onChangeAuthor = ({target: {value}}) => {
+    const onChangeAuthor = ({ target: { value } }) => {
         setAuthor(value)
         if (value) {
-            setErrors(prevState => ({...prevState, author: false}))
-        } else setErrors(prevState => ({...prevState, author: true}))
+            setErrors(prevState => ({ ...prevState, author: false }))
+        } else setErrors(prevState => ({ ...prevState, author: true }))
     }
 
-    const submitMessage = (e) => {
-        e.preventDefault()
+    const inputs = [
+        {
+            label: 'author',
+            value: author,
+            handle: onChangeAuthor
+        },
+        {
+            label: 'text',
+            value: text,
+            handle: onChangeText
+        }
+    ]
+
+    const submitMessage = () => {
         if (author.length && text.length) {
-            setMessageList(prevState => [...prevState, {author, text}])
+            dispatch(sendMessage({ id: chatId, author, text }))
             setText('')
             setAuthor('')
         }
-        if (!author.length) setErrors(prevState => ({...prevState, author: true}))
-        if (!text.length) setErrors(prevState => ({...prevState, text: true}))
+        if (!author.length) setErrors(prevState => ({ ...prevState, author: true }))
+        if (!text.length) setErrors(prevState => ({ ...prevState, text: true }))
     }
 
     useEffect(() => {
-        const length = messageList.length
-        length && setTimeout(() => alert(`Message sent ${messageList[length - 1].author}`), 1500)
-    }, [messageList.length])
-
-    useEffect(() => {
         if (chatId) {
-            !chats.find(({name}) => name === chatId) && navigate(`../404`, {replace: true});
+            !chats.find(({ name }) => name === chatId) && navigate(`../404`, { replace: true });
         }
     }, [])
 
     return (
         <div className="App">
-            <header className="App-header">
-                <div>Selected chat: {chatId || 'none'}</div>
-                <Box
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': {m: 1, width: '25ch'},
-                    }}
-                    autoComplete="off"
-                >
+            <div style={{ flex: 1, textAlign: 'center' }}>Selected chat: {chatId || 'none'}</div>
+            <Box
+                component="form"
+                sx={{
+                    '& .MuiTextField-root': { m: 1, width: '25ch' },
+                }}
+                autoComplete="off"
+            >
+                {inputs.map(({ label, value, handle }) => (
                     <TextField
                         className="form-input"
-                        error={errors.author}
-                        helperText={errors.author ? 'Please, enter author' : null}
+                        error={errors[label]}
+                        helperText={errors[label] ? `Please, enter ${label}` : null}
                         autoFocus
                         id="outlined-required"
-                        label="Author"
-                        onChange={onChangeAuthor}
-                        value={author}
-                    />
-                    <TextField
-                        className="form-input"
-                        error={errors.text}
-                        helperText={errors.text ? 'Please, enter text' : null}
-                        id="outlined-required"
-                        label="Text"
-                        onChange={onChangeText}
-                        value={text}
-                    />
-                    <Button
-                        style={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.secondary.main,
+                        label={label}
+                        onChange={handle}
+                        value={value}
+                        inputProps={{
+                            maxLength: label === 'author' ? 20 : 255,
                         }}
-                        onClick={submitMessage}
-                        variant="contained"
-                    >
-                        SEND
-                    </Button>
-                </Box>
-                <Box sx={{display: 'flex'}}>
-                    <List>{messageList.map(({text}, n) => <Message text={text} key={text + n}/>)}</List>
-                    <List> {chats.map(({name, id}) => (
+                    />
+                ))}
+                <Button
+                    onClick={submitMessage}
+                    variant="contained"
+                    disabled={!chatId}
+                >
+                    SEND
+                </Button>
+                <Button
+                    onClick={addChat}
+                    variant="contained"
+                >
+                    Add Chat
+                </Button>
+            </Box>
+            <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly' }}>
+                <List className="chatsList">
+                    {chats.map(({ name, id }) => (
+                        <Box sx={{ display: 'flex' }}>
                             <ListItem
                                 className={chatId === name ? 'selected-chat' : null}
                                 onClick={() => onNavigateChats(name)}
@@ -114,10 +122,23 @@ function App() {
                             >
                                 {name}
                             </ListItem>
+                            {chatId !== name && <Button
+                                onClick={() => deleteChat(id)}
+                                variant="contained"
+                            >
+                                x
+                            </Button>}
+                        </Box>
+                    ))}
+                </List>
+                <List className="messagesList">
+                    {chats.map(({ name, messages }) => {
+                        if (name === chatId) return messages.map(({ text, author }, n) =>
+                            <Message text={text} author={author} key={text + n} />
                         )
-                    )}</List>
-                </Box>
-            </header>
+                    })}
+                </List>
+            </Box>
         </div>
     );
 }

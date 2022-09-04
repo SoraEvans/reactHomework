@@ -7,22 +7,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-  monospace;
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #7829bf;
+  border-radius: 20px;
+}
+
+header {
+  position: fixed;
+}
 
 .App {
-  text-align: center;
-}
-
-.App-header {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: space-evenly;
   align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: black;
 }
@@ -43,7 +50,8 @@ input {
 }
 
 button {
-  border-radius: 4px;
+  border-radius: 4px !important;
+  margin: 8px 0 !important;
 }
 
 .selected-chat {
@@ -57,4 +65,19 @@ button {
 
 div[role='checkbox'] {
   cursor: pointer;
+}
+
+.MuiInputLabel-outlined {
+  text-transform: capitalize;
+}
+
+.messagesList {
+  overflow: auto;
+  max-width: 200px;
+}
+
+.chatsList {
+  overflow: auto;
+  max-height: 300px;
+  padding-right: 6px !important;
 }

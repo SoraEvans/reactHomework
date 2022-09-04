@@ -1,8 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit'
-import slice from './slice'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { chatsSlice, counterSlice } from './slice'
 
 export default configureStore({
-  reducer: {
-    checkbox: slice,
-  },
+    reducer: combineReducers({
+        chats: chatsSlice.reducer,
+        profile: counterSlice.reducer,
+    }),
 })

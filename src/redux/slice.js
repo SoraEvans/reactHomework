@@ -24,17 +24,16 @@ export const chatsSlice = createSlice({
         removeChats: (state, action) => state.filter(item => item.id !== action.payload),
         sendMessage: (state, action) => {
             const { id, author, text } = action.payload
-            alert(`Message sent ${author}`)
 
             return state.map(item => {
                 return item.name === id ? ({ ...item, messages: [...item.messages, { text, author }] }) : item
             })
-        }
+        },
+        botAnswer: (_, action) => alert(action.payload)
     },
 })
 
 
-// Action creators are generated for each case reducer function
-export const { addChats, removeChats, sendMessage } = chatsSlice.actions
+export const { addChats, removeChats, sendMessage, botAnswer } = chatsSlice.actions
 
 export const { change } = counterSlice.actions

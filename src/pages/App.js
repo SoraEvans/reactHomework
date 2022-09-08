@@ -1,10 +1,10 @@
-import './style.scss'
+import '../style.scss'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { addChats, removeChats, sendMessage, botAnswer } from './redux/slice'
-import { getChatList } from './redux/selectors'
-import { ChatsList, ChatForm } from './components'
+import { addChats, removeChats, sendMessage, botAnswer } from '../redux/slice'
+import { getChatList } from '../redux/selectors'
+import { ChatsList, ChatForm } from '../components'
 
 const errorFields = { author: false, text: false }
 

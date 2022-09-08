@@ -1,9 +1,9 @@
-import './style.scss'
+import '../style.scss'
 import { Checkbox } from '@mui/material'
 import { pink } from '@mui/material/colors'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { change } from './redux/slice'
-import { getCheckInfo } from './redux/selectors'
+import { change } from '../redux/slice'
+import { getCheckInfo } from '../redux/selectors'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 

@@ -1,4 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { STATUSES } from '../api/constants'
+
+const initialValue = {
+    gists: [],
+    request: STATUSES.IDLE,
+    error: null,
+}
 
 export const counterSlice = createSlice({
     name: 'checkbox',
@@ -33,7 +40,24 @@ export const chatsSlice = createSlice({
     },
 })
 
+export const gistsSlice = createSlice({
+    name: 'gists',
+    initialState: initialValue,
+    reducers: {
+        getGistsSuccess: (state = initialValue, action) => ({
+            ...state,
+            gists: action.payload,
+            request: STATUSES.SUCCESS,
+        }),
+        getGistsError: (state = initialValue, action) => ({
+            ...state,
+            request: STATUSES.FAILURE,
+            error: action.payload,
+        })
+    }
+})
 
 export const { addChats, removeChats, sendMessage, botAnswer } = chatsSlice.actions
 
 export const { change } = counterSlice.actions
+export const { getGistsSuccess, getGistsError } = gistsSlice.actions

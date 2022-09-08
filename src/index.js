@@ -1,21 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './pages/App';
 import reportWebVitals from './reportWebVitals';
 import {
     BrowserRouter,
     Routes,
     Route, Link, Navigate,
 } from 'react-router-dom';
-import Profile from './Profile';
-import Home from './Home';
-import NotFound from './NotFound';
+import Profile from './pages/Profile';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 import { persistor, store } from './redux/store'
 import { Provider } from 'react-redux'
 
 import { CircularProgress, ThemeProvider } from '@mui/material'
 import { theme } from './Theme'
 import { PersistGate } from 'redux-persist/integration/react'
+import { GistsList } from "./pages/gists";
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
@@ -35,6 +36,9 @@ root.render(
                             <li>
                                 <Link to="/">Home</Link>
                             </li>
+                            <li>
+                                <Link to="/gists">Game gist</Link>
+                            </li>
                         </ul>
                     </header>
                     <Routes>
@@ -43,6 +47,7 @@ root.render(
                         </Route>
                         <Route index path="/profile" element={<Profile />} />
                         <Route exact path="/" element={<Home />} />
+                        <Route path="/gists" element={<GistsList />} />
                         <Route path="/404" element={<NotFound />} />
                         <Route
                             path="*"

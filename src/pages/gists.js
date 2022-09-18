@@ -1,13 +1,15 @@
 import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectGists, selectGistsError, selectGistsStatus } from '../redux/selectors'
+import { selectGists, selectGistsError, selectGistsStatus, useAuth } from '../redux/selectors'
 import { Button } from '@mui/material'
+import { Navigate } from 'react-router-dom'
 
 export const GistsList = () => {
     const dispatch = useDispatch()
     const gists = useSelector(selectGists);
     const error = useSelector(selectGistsError);
     const status = useSelector(selectGistsStatus);
+    const isAuth = useAuth().isAuth
 
     const requestGists = () => {
         dispatch({ type: 'GISTS::TRIGGER_GISTS_REQUEST' });
@@ -26,6 +28,8 @@ export const GistsList = () => {
         },
         []
     );
+
+    if (!isAuth) return <Navigate to="/login"/>
 
     if (error) {
         return (

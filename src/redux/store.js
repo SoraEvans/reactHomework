@@ -1,9 +1,9 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import { chatsSlice, counterSlice, gistsSlice } from './slice'
+import { authSlice, chatsSlice, counterSlice, gistsSlice } from './slice'
 import createSagaMiddleware from 'redux-saga'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { mySaga, myGists } from './saga'
+import { mySaga, myGists, myAccount, myData } from './saga'
 
 const persistConfig = {
     key: 'root',
@@ -13,7 +13,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
     chats: chatsSlice.reducer,
     profile: counterSlice.reducer,
-    gists: gistsSlice.reducer
+    gists: gistsSlice.reducer,
+    auth: authSlice.reducer
 })
 
 const sagaMiddleware = createSagaMiddleware();
@@ -27,5 +28,7 @@ export const store = configureStore({
 
 sagaMiddleware.run(mySaga)
 sagaMiddleware.run(myGists)
+sagaMiddleware.run(myAccount)
+sagaMiddleware.run(myData)
 
 export const persistor = persistStore(store)

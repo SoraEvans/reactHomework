@@ -1,61 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './pages/App';
-import reportWebVitals from './reportWebVitals';
-import {
-    BrowserRouter,
-    Routes,
-    Route, Link, Navigate,
-} from 'react-router-dom';
-import Profile from './pages/Profile';
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import reportWebVitals from './reportWebVitals'
 import { persistor, store } from './redux/store'
 import { Provider } from 'react-redux'
 
-import { CircularProgress, ThemeProvider } from '@mui/material'
-import { theme } from './Theme'
+import { CircularProgress } from '@mui/material'
 import { PersistGate } from 'redux-persist/integration/react'
-import { GistsList } from "./pages/gists";
+import { RoutesComponent } from './components/Routes'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 root.render(
     <Provider store={store}>
         <PersistGate persistor={persistor} loading={<CircularProgress />}>
-            <BrowserRouter>
-                <ThemeProvider theme={theme}>
-                    <header>
-                        <ul>
-                            <li>
-                                <Link to="/profile">profile</Link>
-                            </li>
-                            <li>
-                                <Link to="/chats">chats</Link>
-                            </li>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li>
-                                <Link to="/gists">Game gist</Link>
-                            </li>
-                        </ul>
-                    </header>
-                    <Routes>
-                        <Route path="/chats" element={<App />}>
-                            <Route path=":chatId" element={<App />} />
-                        </Route>
-                        <Route index path="/profile" element={<Profile />} />
-                        <Route exact path="/" element={<Home />} />
-                        <Route path="/gists" element={<GistsList />} />
-                        <Route path="/404" element={<NotFound />} />
-                        <Route
-                            path="*"
-                            element={<Navigate to="/404" replace />}
-                        />
-                    </Routes>
-                </ThemeProvider>
-            </BrowserRouter>
+            <RoutesComponent/>
         </PersistGate>
     </Provider>
 );

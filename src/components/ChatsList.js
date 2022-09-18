@@ -26,7 +26,7 @@ const ChatsList = ({ chats, chatId, onNavigateChats, deleteChat }) => (
         <List className="messagesList">
             {chats.map(({ name, messages }) => {
                 if (name === chatId) {
-                    return messages.map(({ text, author }, n) =>
+                    return messages?.map(({ text, author }, n) =>
                         <Message text={text} author={author} key={text + n} />
                     )
                 } else return false

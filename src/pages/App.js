@@ -1,23 +1,26 @@
 import '../style.scss'
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { addChats, removeChats, sendMessage, botAnswer } from '../redux/slice'
-import { getChatList } from '../redux/selectors'
+import React, { useEffect, useState } from 'react'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { addChats, botAnswer, removeChats, sendMessage } from '../redux/slice'
 import { ChatsList, ChatForm } from '../components'
+import { getChatList, useAuth } from '../redux/selectors'
 
 const errorFields = { author: false, text: false }
 
-function App() {
+const App = () => {
     const [author, setAuthor] = useState('')
     const [text, setText] = useState('')
     const [errors, setErrors] = useState(errorFields)
+    const messages = useSelector(getChatList)
     const navigate = useNavigate();
-    const { chatId } = useParams();
-    const chats = useSelector(getChatList, shallowEqual)
+    const { chatID } = useParams();
+    const isAuth = useAuth().isAuth
     const dispatch = useDispatch()
 
-    const addChat = () => dispatch(addChats('test'))
+    const addChat = () => {
+        dispatch(addChats('test'))
+    }
 
     const deleteChat = (id) => {
         dispatch(removeChats(id))
@@ -56,8 +59,8 @@ function App() {
 
     const submitMessage = () => {
         if (author.length && text.length) {
-            dispatch(sendMessage({ id: chatId, author, text }))
-            botAnswer(`Message sent in chat: ${chatId} from ${author}`)
+            dispatch(sendMessage({ id: chatID, author, text }))
+            botAnswer(`Message sent in chat: ${chatID} from ${author}`)
             setText('')
             setAuthor('')
         }
@@ -66,30 +69,34 @@ function App() {
     }
 
     useEffect(() => {
-        if (chatId) {
-            !chats.find(({ name }) => name === chatId) && navigate(`../404`, { replace: true });
-        }
-    }, [chatId, chats, navigate])
+        dispatch({ type: 'FIREBASE_GET_CHATS', payload: { dispatch } });
+    }, []);
 
-    return (
-        <div className="App">
-            <div style={{ flex: 1, textAlign: 'center' }}>
-                Selected chat: {chatId || 'none'}
-            </div>
-            <ChatForm
-                chatId={chatId}
-                addChat={addChat}
-                inputs={inputs}
-                errors={errors}
-                submitMessage={submitMessage}
-            />
-            <ChatsList
-                chats={chats}
-                chatId={chatId}
-                deleteChat={deleteChat}
-                onNavigateChats={onNavigateChats}
-            />
-        </div>
+    useEffect(() => {
+        if (chatID) {
+            !messages.find(({ name }) => name === chatID) && navigate(`../404`, { replace: true });
+        }
+    }, [chatID, messages, navigate])
+
+    return (isAuth ?
+            <div className="App">
+                <div style={{ flex: 1, textAlign: 'center' }}>
+                    Selected chat: {chatID || 'none'}
+                </div>
+                <ChatForm
+                    chatId={chatID}
+                    addChat={addChat}
+                    inputs={inputs}
+                    errors={errors}
+                    submitMessage={submitMessage}
+                />
+                <ChatsList
+                    chats={messages}
+                    chatId={chatID}
+                    deleteChat={deleteChat}
+                    onNavigateChats={onNavigateChats}
+                />
+            </div> : <Navigate to="/login" />
     );
 }
 

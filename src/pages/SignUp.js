@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { useAuth } from '../redux/selectors'
 import { Link, Navigate } from 'react-router-dom'
+import { Input } from '@mui/material'
 
 export const SignUp = () => {
     const [email, setEmail] = useState('')
@@ -36,16 +37,17 @@ export const SignUp = () => {
                 <form onSubmit={handleSubmit}>
                     <p>Fill in the form below to register new account.</p>
                     <div>
-                        <input
+                        <Input
                             placeholder="Email"
                             name="email"
                             type="email"
                             onChange={handleEmailChange}
                             value={email}
+                            inputProps={{ "data-testid": "content-input" }}
                         />
                     </div>
                     <div>
-                        <input
+                        <Input
                             placeholder="Password"
                             name="password"
                             onChange={handlePassChange}

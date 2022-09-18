@@ -5,22 +5,20 @@ const ChatsList = ({ chats, chatId, onNavigateChats, deleteChat }) => (
     <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly' }}>
         <List className="chatsList">
             {chats.map(({ name, id }) => (
-                <Box sx={{ display: 'flex' }}>
-                    <ListItem
-                        className={chatId === name ? 'selected-chat' : null}
-                        onClick={() => onNavigateChats(name)}
-                        key={id}
-                        id={id}
-                    >
-                        {name}
-                    </ListItem>
+                <ListItem
+                    className={chatId === name ? 'selected-chat' : null}
+                    onClick={() => onNavigateChats(name)}
+                    id={id}
+                    key={id}
+                >
+                    <span style={{ marginRight: 16 }}>{name}</span>
                     {chatId !== name && <Button
                         onClick={() => deleteChat(id)}
                         variant="contained"
                     >
                         x
                     </Button>}
-                </Box>
+                </ListItem>
             ))}
         </List>
         <List className="messagesList">

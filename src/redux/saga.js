@@ -25,12 +25,12 @@ function* getAllGists() {
     }
 }
 
-function* getUserData(action) {
+function* getUserData() {
     try {
         const starCountRef = ref(database, 'chats');
         yield onValue(starCountRef, (snapshot) => {
             const data = snapshot.val();
-            action.payload.dispatch(getChats(data))
+            put(getChats(data))
         });
     } catch (err) {
         console.log(err.message);

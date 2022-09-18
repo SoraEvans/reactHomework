@@ -10,7 +10,7 @@ const persistConfig = {
     storage,
 }
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     chats: chatsSlice.reducer,
     profile: counterSlice.reducer,
     gists: gistsSlice.reducer,

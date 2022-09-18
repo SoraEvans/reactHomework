@@ -14,8 +14,10 @@ const ChatForm = ({ inputs, errors, submitMessage, chatId, addChat }) => (
                 error={errors[label]}
                 helperText={errors[label] ? `Please, enter ${label}` : null}
                 autoFocus
-                id="outlined-required"
+                id={label}
                 label={label}
+                key={label}
+                aria-labelledby={label}
                 onChange={handle}
                 value={value}
                 inputProps={{
